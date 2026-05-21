@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AppProvider } from './lib/context';
+import { Navbar } from './components/Navbar';
 
 const baseUrl = 'https://vexor.team';
 
@@ -62,10 +63,6 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: baseUrl,
-    languages: {
-      uk: baseUrl,
-      en: `${baseUrl}/en`,
-    },
   },
   verification: {
     google: 'YOUR_GOOGLE_SEARCH_CONSOLE_TOKEN',
@@ -84,7 +81,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
       </head>
       <body>
-        <AppProvider>{children}</AppProvider>
+        <AppProvider>
+          <Navbar />
+          {children}
+        </AppProvider>
       </body>
     </html>
   );

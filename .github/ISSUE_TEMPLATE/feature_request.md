@@ -1,20 +1,19 @@
 ---
 name: Feature request
-about: Запропонувати нову функцію / Suggest a new feature
+about: Suggest a new feature
 title: '[FEAT] '
 labels: 'enhancement'
 assignees: ''
 ---
 
-**Проблема / Problem**
-Чітко опишіть яку проблему вирішує ця функція.
+**Problem**
+
 A clear description of what problem this feature solves.
 
-**Запропоноване рішення / Proposed solution**
-Як ви бачите реалізацію цієї функції.
+**Proposed solution**
 
-**Альтернативи / Alternatives**
-Чи розглядали інші підходи? Які?
+**Alternatives**
 
-**Додатково / Additional context**
-Скріншоти, посилання на приклади, будь-який додатковий контекст.
+**Additional context**
+
+Screens or text

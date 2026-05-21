@@ -1,5 +1,6 @@
 'use client';
 import { DiamondMark } from './Logo';
+import { socialLinks } from '../data/site';
 import { useApp } from '../lib/context';
 
 const EXT = { target: '_blank' as const, rel: 'noopener noreferrer nofollow' };
@@ -33,7 +34,7 @@ export function Footer() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
           <a
-            href="https://github.com/vexorteam"
+            href={socialLinks.github}
             {...EXT}
             style={{ fontSize: 13, color: 'var(--text-muted)', transition: 'color 0.2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
@@ -42,7 +43,7 @@ export function Footer() {
             {f.github}
           </a>
           <a
-            href="https://t.me/vexor_studio"
+            href={socialLinks.telegram}
             {...EXT}
             style={{ fontSize: 13, color: 'var(--text-muted)', transition: 'color 0.2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}

@@ -2,7 +2,6 @@
 import { motion } from 'framer-motion';
 import { DiamondMark } from './Logo';
 import { useApp } from '../lib/context';
-import { stats } from '../data/site';
 
 export function Hero() {
   const { tr, theme } = useApp();
@@ -10,10 +9,10 @@ export function Hero() {
   const s = tr.stats;
 
   const statsData = [
-    { num: stats[0].num, label: s.projects },
-    { num: stats[1].num, label: s.years },
-    { num: stats[2].num, label: s.clients },
-    { num: stats[3].num, label: s.vector },
+    { num: '30+', label: s.projects },
+    { num: '4+', label: s.years },
+    { num: '92%', label: s.clients },
+    { num: 'UA ➜ EU', label: s.vector },
   ];
 
   return (
@@ -152,15 +151,17 @@ export function Hero() {
           <motion.a
             href="#contact"
             style={{
-              display: 'inline-block',
+              display: 'inline-flex',
               fontSize: 14,
               fontWeight: 600,
               padding: '12px 0',
               borderRadius: 9,
               minWidth: 180,
               justifyContent: 'center',
+              alignItems: 'center',
               background: 'var(--text-primary)',
               color: 'var(--bg)',
+              textDecoration: 'none',
             }}
             whileHover={{ scale: 1.03, y: -2 }}
             whileTap={{ scale: 0.97 }}
@@ -181,6 +182,7 @@ export function Hero() {
               minWidth: 180,
               justifyContent: 'center',
               border: '1px solid var(--border-c)',
+              textDecoration: 'none',
             }}
             whileHover={{ scale: 1.03, y: -2 }}
             whileTap={{ scale: 0.97 }}

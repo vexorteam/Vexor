@@ -1,28 +1,29 @@
 ---
 name: Content update
-about: Оновити тексти, переклади або контент / Update texts, translations or content
+about: Update texts, translations or content
 title: '[CONTENT] '
 labels: 'content'
 assignees: ''
 ---
 
-**Що змінити / What to change**
-Секція сайту або файл: [e.g. FAQ, послуги, команда, i18n/uk.json]
+**What to change**
 
-**Поточний текст / Current text**
+Section or file: [e.g. FAQ, Services, i18n/uk.json]
 
-```
-Вставте поточний текст
-```
-
-**Новий текст / New text**
+**Current text**
 
 ```
-Вставте новий текст
+Paste current text
 ```
 
-**Мова / Language**
+**New text**
 
-- [ ] 🇺🇦 Українська
+```
+Paste new text
+```
+
+**Language**
+
+- [ ] 🇺🇦 Ukraine
 - [ ] 🇬🇧 English
-- [ ] Обидві / Both
+- [ ] Both

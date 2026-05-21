@@ -30,7 +30,59 @@
     "title": "Selected projects",
     "sub": "Real challenges, real results. Every project is a product people actually use.",
     "view_all": "View all projects →",
-    "view_case": "View case study"
+    "view_case": "View case study",
+    "categories": {
+      "all": "All",
+      "Landing Page": "Landing Page",
+      "Mobile App": "Mobile App",
+      "SaaS Platform": "SaaS Platform",
+      "Web App": "Web App",
+      "Design": "Design",
+      "Automation & AI": "Automation & AI"
+    },
+    "all_title": "All projects",
+    "all_sub": "{n} projects — from landing pages to SaaS platforms",
+    "empty": "No projects in this category",
+    "client": "Client",
+    "year": "Year",
+    "stack": "Stack",
+    "discuss": "Discuss a similar project →",
+    "github": "GitHub",
+    "back": "All projects",
+    "back2": "Go Home",
+    "demo": "Demo",
+    "projects_list": [
+      {
+        "slug": "krepa",
+        "type": "Landing Page",
+        "name": "Krepa",
+        "desc": "Promo landing page for a fitness app with animations and CTA for download.",
+        "stack": ["Next.js", "Framer Motion", "Tailwind"],
+        "gradient": "linear-gradient(135deg,#0f1a0f 0%,#1a3a1a 100%)",
+        "github": "https://github.com/vexorteam/Krepa",
+        "image": "/assets/projects/krepa.png"
+      },
+      {
+        "slug": "strym",
+        "type": "Web App",
+        "name": "Strym",
+        "desc": "E-commerce application for selling electronics with catalog and filtering.",
+        "stack": ["Next.js", "FastAPI", "PostgreSQL"],
+        "gradient": "linear-gradient(135deg,#0a1628 0%,#185FA5 100%)",
+        "github": "https://github.com/vexorteam/Strym",
+        "image": "/assets/projects/strym.png"
+      },
+      {
+        "slug": "roksi-shop",
+        "type": "Design",
+        "name": "Roksi Shop",
+        "desc": "UI/UX design of an online store for women's clothing.",
+        "stack": ["Figma", "UI/UX", "E-commerce"],
+        "gradient": "linear-gradient(135deg,#1a0a14 0%,#3a1a2a 100%)",
+        "dribbble": "https://dribbble.com/shots/23611735-roksi-shop",
+        "image": "/assets/projects/roksi.png"
+      }
+    ]
   },
   "about": {
     "tag": "// team",
@@ -40,15 +92,81 @@
     "p1_rest": "Every project gets the attention it deserves.",
     "p1_intro": "We are a small team from Ukraine.",
     "p2": "We build products we are proud of — clean code, thoughtful design, honest deadlines.",
-    "p2_bold": "Zero bullshit.",
+    "p2_bold": "We deliver, no excuses.",
     "github_sub": "Open source projects and team cases",
     "telegram_sub": "Message the team directly",
     "process_title": "How we work",
     "process": [
-      { "n": "01", "label": "Discovery", "desc": "We understand your idea, not just the spec" },
-      { "n": "02", "label": "Design", "desc": "Figma prototype before any code is written" },
-      { "n": "03", "label": "Development", "desc": "Weekly progress updates, no surprises" },
-      { "n": "04", "label": "Launch", "desc": "Deploy, configure, hand off the project" }
+      {
+        "n": "01",
+        "label": "Discovery",
+        "desc": "We understand your idea, not just the spec"
+      },
+      {
+        "n": "02",
+        "label": "Design",
+        "desc": "Figma prototype before any code is written"
+      },
+      {
+        "n": "03",
+        "label": "Development",
+        "desc": "Weekly progress updates, no surprises"
+      },
+      {
+        "n": "04",
+        "label": "Launch",
+        "desc": "Deploy, configure, hand off the project"
+      }
+    ],
+    "team_list": [
+      {
+        "id": "oleg",
+        "initials": "OV",
+        "name": "Oleh V.",
+        "role": "Fullstack Developer",
+        "desc": "5 years of experience. Specializes in Next.js, Node.js, and UI/UX design. Built platforms for fintech and e-commerce.",
+        "skills": ["Next.js", "Node.js", "UI/UX"]
+      },
+      {
+        "id": "viktor",
+        "initials": "VL",
+        "name": "Victor L.",
+        "role": "Backend Developer",
+        "desc": "4 years of experience. Worked with 30+ projects from idea to finished product. Python (FastAPI), Java (SpringBoot), AI integration.",
+        "skills": ["FastAPI", "SpringBoot", "Ollama"]
+      },
+      {
+        "id": "rostyslav",
+        "initials": "RM",
+        "name": "Rostyslav M.",
+        "role": "Backend Developer",
+        "desc": "API and database architect. Experience with highload systems and microservices.",
+        "skills": [".NET", "ASP.NET", "PostgreSQL"]
+      },
+      {
+        "id": "danila",
+        "initials": "DM",
+        "name": "Danylo M.",
+        "role": "Fullstack Developer",
+        "desc": "React and TypeScript since 2023. Writes clean, accessible code. Performance is his passion.",
+        "skills": ["React", "TypeScript", "SpringBoot"]
+      },
+      {
+        "id": "kirilo",
+        "initials": "KS",
+        "name": "Kyrylo S.",
+        "role": "Mobile Developer",
+        "desc": "React Native and Flutter from scratch to App Store. Published 6+ apps for iOS and Android.",
+        "skills": ["React Native", "Flutter", "Java"]
+      },
+      {
+        "id": "danylo",
+        "initials": "DH",
+        "name": "Danylo H.",
+        "role": "Project Manager",
+        "desc": "Holds all the strings. Guarantees the project delivers on time and the client is always in the loop.",
+        "skills": ["Agile", "Scrum", "Jira"]
+      }
     ]
   },
   "faq": {
@@ -58,7 +176,7 @@
     "items": [
       {
         "q": "How much does a website cost?",
-        "a": "The cost depends on the project scope. A simple landing page starts from $200, a corporate site from $500, a web platform or SaaS from $1,200. We give an exact quote after discussing your needs."
+        "a": "The cost depends on the scope, complexity, and timeline of your project. We give an exact quote after a short discovery call — no hidden fees, no surprises."
       },
       {
         "q": "How long does development take?",
@@ -114,7 +232,9 @@
       "desc_placeholder": "Briefly describe what needs to be done...",
       "submit": "Send request",
       "submitted": "Sent!",
-      "tg_btn": "Message us on Telegram"
+      "tg_btn": "Message us on Telegram",
+      "invalid_input": "Invalid input",
+      "fill_required": "Please fill in name and contact"
     },
     "budget_uah": [
       "до 8 000 ₴",
@@ -131,7 +251,10 @@
       "$2,000 – $5,000",
       "$5,000+",
       "Not sure yet"
-    ]
+    ],
+    "missing_fields": "Please fill in the required fields: Name and Contact.",
+    "invalid_script": "Invalid input in the form.",
+    "button_error": "Invalid input"
   },
   "footer": {
     "rights": "All rights reserved.",
@@ -145,5 +268,43 @@
     "description": "Outsource software development team from Ukraine. Websites, mobile apps, product design. Next.js, React Native, Figma.",
     "og_title": "Vexor — We build what you ship.",
     "og_description": "Outsource team for web, mobile and product design. From idea to ready solution."
-  }
+  },
+  "services_list": [
+    {
+      "icon": "🌐",
+      "name": "Website for your business",
+      "desc": "Landing page, corporate site or online store. Fast, beautiful and ranking on Google.",
+      "tags": ["Next.js", "Tailwind", "SEO"]
+    },
+    {
+      "icon": "📱",
+      "name": "Mobile application",
+      "desc": "iOS and Android at once. Your product in the client's pocket — with a native feel and smooth animations.",
+      "tags": ["React Native", "Flutter"]
+    },
+    {
+      "icon": "⚙️",
+      "name": "Web platform or SaaS",
+      "desc": "Personal dashboard, CRM, admin panel or your own service with database and authentication.",
+      "tags": ["Node.js", "PostgreSQL", "API"]
+    },
+    {
+      "icon": "🎨",
+      "name": "Product design",
+      "desc": "UI/UX design from scratch or redesign of what you have. A prototype you can show investors tomorrow.",
+      "tags": ["Figma", "UI/UX", "Prototype"]
+    },
+    {
+      "icon": "🧠",
+      "name": "Automation & AI",
+      "desc": "Telegram bots, AI assistants, ChatGPT/Claude integration — automate routine and add intelligence to your product.",
+      "tags": ["OpenAI", "Claude API", "Telegram API"]
+    },
+    {
+      "icon": "🚀",
+      "name": "Support & growth",
+      "desc": "Already have a product? We take it under maintenance: new features, bug fixes, performance, security.",
+      "tags": ["DevOps", "CI/CD", "Support"]
+    }
+  ]
 }

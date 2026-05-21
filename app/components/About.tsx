@@ -1,13 +1,15 @@
 'use client';
 import { motion } from 'framer-motion';
 import { useApp } from '../lib/context';
-import { team } from '../data/site';
+import { socialLinks } from '../data/site';
 
 const EXT = { target: '_blank' as const, rel: 'noopener noreferrer nofollow' };
 
 export function About() {
   const { tr } = useApp();
   const a = tr.about;
+
+  const teamList = a.team_list || [];
 
   return (
     <section id="about" className="section-wrap">
@@ -63,7 +65,7 @@ export function About() {
 
           {/* GitHub */}
           <a
-            href="https://github.com/vexorteam"
+            href={socialLinks.github}
             {...EXT}
             style={{
               display: 'flex',
@@ -75,6 +77,7 @@ export function About() {
               background: 'var(--bg2)',
               border: '1px solid var(--border-c)',
               transition: 'border-color 0.2s',
+              textDecoration: 'none',
             }}
             onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--text-muted)')}
             onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border-c)')}
@@ -118,7 +121,7 @@ export function About() {
 
           {/* Telegram */}
           <a
-            href="https://t.me/vexor_studio"
+            href={socialLinks.telegram}
             {...EXT}
             style={{
               display: 'flex',
@@ -130,6 +133,7 @@ export function About() {
               background: 'rgba(38,169,224,0.06)',
               border: '1px solid rgba(38,169,224,0.2)',
               transition: 'all 0.2s',
+              textDecoration: 'none',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.borderColor = 'rgba(38,169,224,0.5)';
@@ -158,7 +162,9 @@ export function About() {
               </svg>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 500, color: '#26a9e0' }}>@vexor_studio</div>
+              <div style={{ fontSize: 14, fontWeight: 500, color: '#26a9e0' }}>
+                {socialLinks.telegramDisplay}
+              </div>
               <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
                 {a.telegram_sub}
               </div>
@@ -196,15 +202,15 @@ export function About() {
           >
             {a.process_title}
           </div>
-          {a.process.map((step, i) => (
+          {(a.process || []).map((step, i, arr) => (
             <div
               key={step.n}
               style={{
                 display: 'flex',
                 gap: 14,
-                paddingBottom: i < a.process.length - 1 ? 16 : 0,
-                marginBottom: i < a.process.length - 1 ? 16 : 0,
-                borderBottom: i < a.process.length - 1 ? '1px solid var(--border-c)' : 'none',
+                paddingBottom: i < arr.length - 1 ? 16 : 0,
+                marginBottom: i < arr.length - 1 ? 16 : 0,
+                borderBottom: i < arr.length - 1 ? '1px solid var(--border-c)' : 'none',
               }}
             >
               <span
@@ -247,93 +253,101 @@ export function About() {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.1 }}
       >
-        {team.map((m, i) => (
-          <motion.div
-            key={m.name}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: i * 0.07 }}
-            style={{
-              padding: 22,
-              borderRadius: 12,
-              background: 'var(--bg2)',
-              border: '1px solid var(--border-c)',
-              transition: 'border-color 0.2s',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--text-muted)')}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border-c)')}
-          >
-            <div
-              className="no-select"
+        {teamList.map((m, i) => {
+          const currentSkills = m.skills || [];
+          const initials = m.initials || (m.name ? m.name.substring(0, 2).toUpperCase() : '??');
+
+          return (
+            <motion.div
+              key={m.id || m.name}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.07 }}
               style={{
-                width: 60,
-                height: 60,
-                borderRadius: '50%',
-                background: 'var(--bg3)',
-                border: '2px solid var(--border-c)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 17,
-                fontWeight: 600,
-                color: 'var(--text-primary)',
-                marginBottom: 14,
+                padding: 22,
+                borderRadius: 12,
+                background: 'var(--bg2)',
+                border: '1px solid var(--border-c)',
+                transition: 'border-color 0.2s',
               }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--text-muted)')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border-c)')}
             >
-              {m.initials}
-            </div>
-            <div
-              style={{
-                fontSize: 15,
-                fontWeight: 600,
-                color: 'var(--text-primary)',
-                marginBottom: 2,
-              }}
-            >
-              {m.name}
-            </div>
-            <div
-              className="no-select"
-              style={{
-                fontSize: 12,
-                color: 'var(--accent)',
-                marginBottom: 10,
-                fontFamily: 'Geist Mono,monospace',
-              }}
-            >
-              {m.role}
-            </div>
-            <div
-              style={{
-                fontSize: 13,
-                color: 'var(--text-secondary)',
-                lineHeight: 1.6,
-                marginBottom: 12,
-              }}
-            >
-              {m.desc}
-            </div>
-            <div className="no-select" style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-              {m.skills.map(s => (
-                <span
-                  key={s}
-                  style={{
-                    fontSize: 10,
-                    padding: '2px 8px',
-                    borderRadius: 4,
-                    background: 'var(--bg3)',
-                    border: '1px solid var(--border-c)',
-                    color: 'var(--text-secondary)',
-                    fontFamily: 'Geist Mono,monospace',
-                  }}
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-        ))}
+              <div
+                className="no-select"
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  background: 'var(--bg3)',
+                  border: '2px solid var(--border-c)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 17,
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  marginBottom: 14,
+                }}
+              >
+                {initials}
+              </div>
+              <div
+                style={{
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  marginBottom: 2,
+                }}
+              >
+                {m.name}
+              </div>
+              <div
+                className="no-select"
+                style={{
+                  fontSize: 12,
+                  color: 'var(--accent)',
+                  marginBottom: 10,
+                  fontFamily: 'Geist Mono,monospace',
+                }}
+              >
+                {m.role}
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.6,
+                  marginBottom: currentSkills.length > 0 ? 12 : 0,
+                }}
+              >
+                {m.desc}
+              </div>
+
+              {currentSkills.length > 0 && (
+                <div className="no-select" style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                  {currentSkills.map(s => (
+                    <span
+                      key={s}
+                      style={{
+                        fontSize: 10,
+                        padding: '2px 8px',
+                        borderRadius: 4,
+                        background: 'var(--bg3)',
+                        border: '1px solid var(--border-c)',
+                        color: 'var(--text-secondary)',
+                        fontFamily: 'Geist Mono,monospace',
+                      }}
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
       </motion.div>
       <style>{`
         @media (max-width: 1024px) {

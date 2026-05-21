@@ -1,11 +1,11 @@
 'use client';
 import { motion } from 'framer-motion';
 import { useApp } from '../lib/context';
-import { services } from '../data/site';
 
 export function Services() {
   const { tr } = useApp();
   const s = tr.services;
+  const list = tr.services_list;
 
   return (
     <section id="services" className="section-wrap">
@@ -21,7 +21,7 @@ export function Services() {
       </motion.div>
 
       <div className="services-grid">
-        {services.map((svc, i) => (
+        {list.map((svc, i) => (
           <motion.div
             key={svc.name}
             initial={{ opacity: 0, y: 20 }}

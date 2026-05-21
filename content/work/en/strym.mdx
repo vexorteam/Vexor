@@ -1,0 +1,35 @@
+---
+title: Strym
+type: Web App
+description: Bilingual electronics online store with catalog, search, cart and admin panel.
+image: /assets/projects/strym.png
+gradient: linear-gradient(135deg,#0a1628 0%,#185FA5 100%)
+stack: [Next.js, FastAPI, PostgreSQL, TypeScript]
+year: 2025
+client: Strym
+demo: https://strym.vercel.app
+github: https://github.com/vexorteam/Strym
+---
+
+## About the project
+
+Strym is a full-featured e-commerce app for electronics. Dark editorial style, bilingual UI (UA/EN), theme switcher and built-in admin panel.
+
+## What we built
+
+- Catalog with full-text search, filtering by category, brand and price
+- Product pages with photo gallery, specs and reviews
+- Cart — guest mode via localStorage and authenticated via DB with sync on login
+- Checkout with two delivery options and order status tracking
+- JWT auth with refresh tokens and httpOnly cookies
+- Admin panel: full CRUD for products, categories, orders and users
+
+## Results
+
+- Catalog load time: **< 1s** thanks to SSR + ISR
+- Swagger UI with auto-generated API docs
+- Deploy: Frontend on Vercel, Backend on Railway, PostgreSQL as Railway plugin
+
+---
+
+_Stack: Next.js 14, FastAPI, PostgreSQL, SQLAlchemy, JWT, Zustand, Docker_

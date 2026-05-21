@@ -1,30 +1,70 @@
-## Що зроблено / What's done
+## What's done
 
-<!-- Коротко опишіть що змінилось -->
+<!-- Briefly describe what changed -->
 
-## Тип змін / Type of changes
+## Type of changes
 
-- [ ] `feat` — нова функція
-- [ ] `fix` — виправлення помилки
-- [ ] `content` — зміна текстів / перекладів
-- [ ] `style` — форматування, CSS
-- [ ] `refactor` — рефакторинг без нових функцій
-- [ ] `chore` — залежності, конфіги
-- [ ] `docs` — документація
+- [ ] `feat` — new feature
+- [ ] `fix` — bug fix
+- [ ] `chore` — dependencies, configs, routine tasks
+- [ ] `docs` — documentation
+- [ ] `style` — formatting, CSS, whitespace
+- [ ] `refactor` — refactoring without new features
+- [ ] `perf` — performance improvement
+- [ ] `test` — tests
+- [ ] `ci` — CI/CD changes
+- [ ] `revert` — revert changes
+- [ ] `content` — texts / translations
 
-## Чеклист / Checklist
+## Branch naming
 
-- [ ] `npm run build` — білд проходить
-- [ ] `npm run lint` — ESLint без помилок
-- [ ] `npm run type-check` — TypeScript без помилок
-- [ ] `npm test` — Jest тести проходять
-- [ ] Перевірено на мобільному / Tested on mobile
-- [ ] Перевірено UA та EN мови / Tested UA and EN
+```
+feat/...
+fix/...
+chore/...
+docs/...
+style/...
+refactor/...
+perf/...
+test/...
+ci/...
+revert/...
+content/...
+```
 
-## Скріншоти / Screenshots
+## Checklist
 
-<!-- Якщо є візуальні зміни — додайте до/після -->
+**Required**
 
-## Пов'язані issues / Related issues
+- [ ] `npm run build` — build passes without errors
+- [ ] `npm run type-check` — no TypeScript errors
+- [ ] `npm run lint` — no ESLint errors
+- [ ] `npm run lint:fix` — all auto-fixes applied
+- [ ] `npm run lint:css` — no StyleLint errors
+- [ ] `npm run format:check` — no Prettier warnings
+
+**Tests**
+
+- [ ] `npm test` — Jest unit tests pass
+- [ ] `npm run test:ci` — Jest with coverage passes
+- [ ] `npm run test:e2e` — Playwright E2E passes (run `npx playwright install chromium` first if needed)
+
+**UI / UX**
+
+- [ ] Tested on desktop (1280px+)
+- [ ] Tested on mobile (375px)
+- [ ] Tested on small screen (220px)
+- [ ] Tested dark theme
+- [ ] Tested light theme
+- [ ] Tested UA language
+- [ ] Tested EN language
+
+## Screenshots
+
+| Before | After |
+| ------ | ----- |
+|        |       |
+
+## Related issues
 
 Closes #

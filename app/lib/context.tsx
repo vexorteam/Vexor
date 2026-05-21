@@ -19,7 +19,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>('uk');
   const [mounted, setMounted] = useState(false);
 
+  // Read from localStorage on mount
   useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem('vexor-theme') as Theme | null;
+      const savedLang = localStorage.getItem('vexor-lang') as Lang | null;
+      if (savedTheme === 'light' || savedTheme === 'dark') setTheme(savedTheme);
+      if (savedLang === 'uk' || savedLang === 'en') setLang(savedLang);
+    } catch {
+      //
+    }
     setMounted(true);
   }, []);
 
@@ -55,8 +64,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [theme, mounted]);
 
-  const toggleTheme = () => setTheme(p => (p === 'dark' ? 'light' : 'dark'));
-  const toggleLang = () => setLang(p => (p === 'uk' ? 'en' : 'uk'));
+  const toggleTheme = () => {
+    setTheme(p => {
+      const next = p === 'dark' ? 'light' : 'dark';
+      try {
+        localStorage.setItem('vexor-theme', next);
+      } catch {
+        //
+      }
+      return next;
+    });
+  };
+
+  const toggleLang = () => {
+    setLang(p => {
+      const next = p === 'uk' ? 'en' : 'uk';
+      try {
+        localStorage.setItem('vexor-lang', next);
+      } catch {
+        //
+      }
+      return next;
+    });
+  };
+
   const tr = translations[lang];
 
   return (

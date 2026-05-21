@@ -9,6 +9,8 @@ export const metadata: Metadata = {
 };
 
 export default function WorkPage() {
-  const projects = getAllWork();
-  return <WorkPageClient projects={projects} />;
+  // Both langs preloaded — client switches between them
+  const projectsUk = getAllWork('uk');
+  const projectsEn = getAllWork('en');
+  return <WorkPageClient projectsUk={projectsUk} projectsEn={projectsEn} />;
 }

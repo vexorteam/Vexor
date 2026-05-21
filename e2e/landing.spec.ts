@@ -114,6 +114,11 @@ test.describe('Vexor landing page', () => {
 
   test('contact form submit button should show success', async ({ page }) => {
     await page.locator('#contact').scrollIntoViewIfNeeded();
+    // Fill required fields first (form now validates name + contact)
+    const nameInput = page.locator('#contact input').first();
+    const contactInput = page.locator('#contact input').nth(1);
+    await nameInput.fill('Test User');
+    await contactInput.fill('@testuser');
     await page.click('button:has-text("Надіслати заявку")');
     await expect(page.locator('text=Відправлено')).toBeVisible();
   });

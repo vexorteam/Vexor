@@ -26,10 +26,10 @@ export function Navbar() {
   }, [menuOpen]);
 
   const links = [
-    { href: '#services', label: n.services },
-    { href: '#work', label: n.work },
-    { href: '#about', label: n.team },
-    { href: '#faq', label: n.faq },
+    { href: '/#services', label: n.services },
+    { href: '/#work', label: n.work },
+    { href: '/#about', label: n.team },
+    { href: '/#faq', label: n.faq },
   ];
 
   const navBg = scrolled
@@ -174,7 +174,7 @@ export function Navbar() {
 
             {/* CTA — desktop */}
             <a
-              href="#contact"
+              href="/#contact"
               className="nav-cta-desktop"
               style={{
                 marginLeft: 8,
@@ -186,8 +186,6 @@ export function Navbar() {
                 color: isDark ? '#0a0a0a' : 'white',
                 transition: 'opacity 0.2s',
                 whiteSpace: 'nowrap',
-                width: '160px',
-                textAlign: 'center',
               }}
               onMouseEnter={e => (e.currentTarget.style.opacity = '0.82')}
               onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
@@ -316,7 +314,7 @@ export function Navbar() {
 
           {/* CTA */}
           <a
-            href="#contact"
+            href="/#contact"
             onClick={() => setMenuOpen(false)}
             style={{
               display: 'flex',

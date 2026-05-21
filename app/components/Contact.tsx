@@ -1,16 +1,53 @@
 'use client';
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { useApp } from '../lib/context';
 
-const EXT = { target: '_blank' as const, rel: 'noopener noreferrer nofollow' };
+import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { useApp } from '../lib/context';
+import { socialLinks } from '../data/site';
+
+const EXT = {
+  target: '_blank' as const,
+  rel: 'noopener noreferrer nofollow',
+};
+
+const containsScriptTag = (value: string) => {
+  return /<\s*script\b[^>]*>(.*?)<\s*\/\s*script>/gi.test(value);
+};
+
+const isValidContact = (value: string) => {
+  const clean = value.trim();
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean);
+  const isTelegram = clean.startsWith('@') && clean.length >= 3;
+  const isPhone = /^\+?[0-9\s\-()]{7,15}$/.test(clean);
+  return isEmail || isTelegram || isPhone;
+};
 
 export function Contact() {
-  const { tr, theme } = useApp();
+  const { tr, theme, lang } = useApp();
+
   const [sent, setSent] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [currency, setCurrency] = useState<'uah' | 'usd'>('uah');
+
+  const [nameValue, setNameValue] = useState('');
+  const [contactValue, setContactValue] = useState('');
+  const [typeValue, setTypeValue] = useState('');
+  const [budgetValue, setBudgetValue] = useState('');
+  const [descValue, setDescValue] = useState('');
+
+  const [requiredError, setRequiredError] = useState(false);
+  const [validationErrorMessage, setValidationErrorMessage] = useState('');
+
+  const sentTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (sentTimerRef.current) clearTimeout(sentTimerRef.current);
+    };
+  }, []);
+
   const c = tr.contact;
   const f = c.form;
+
   const isDark = theme === 'dark';
 
   const inp: React.CSSProperties = {
@@ -26,25 +63,126 @@ export function Contact() {
     transition: 'border-color 0.2s',
   };
 
+  const checkHasError = (overrides: Record<string, string> = {}) => {
+    const fields = {
+      name: nameValue,
+      contact: contactValue,
+      desc: descValue,
+      ...overrides,
+    };
+    const stillInvalid = Object.values(fields).some(containsScriptTag);
+    setHasError(stillInvalid);
+    return stillInvalid;
+  };
+
+  const validateField = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    fieldKey: string
+  ) => {
+    const value = e.target.value;
+    const invalid = containsScriptTag(value);
+
+    e.target.style.borderColor = invalid ? '#ef4444' : 'var(--border-c)';
+
+    checkHasError({ [fieldKey]: value });
+  };
+
+  const validateRequired = () => {
+    const isUk = lang === 'uk';
+
+    if (!nameValue.trim() || !contactValue.trim()) {
+      setRequiredError(true);
+      setValidationErrorMessage(
+        c.missing_fields ||
+          (isUk
+            ? 'Будь ласка, заповніть обовʼязкові поля: Імʼя та Контакт.'
+            : 'Please fill in the required fields: Name and Contact.')
+      );
+      return false;
+    }
+
+    if (nameValue.trim().length < 2) {
+      setRequiredError(true);
+      setValidationErrorMessage(
+        isUk
+          ? 'Імʼя занадто коротке (мінімум 2 символи).'
+          : 'The name is too short (minimum 2 characters).'
+      );
+      return false;
+    }
+
+    if (contactValue.trim().length < 4) {
+      setRequiredError(true);
+      setValidationErrorMessage(
+        isUk ? 'Контактні дані занадто короткі.' : 'Contact information is too short.'
+      );
+      return false;
+    }
+
+    if (!isValidContact(contactValue)) {
+      setRequiredError(true);
+      setValidationErrorMessage(
+        isUk
+          ? 'Будь ласка, вкажіть коректний Email або Telegram (починаючи з @).'
+          : 'Please provide a valid Email or Telegram username (starting with @).'
+      );
+      return false;
+    }
+
+    setRequiredError(false);
+    setValidationErrorMessage('');
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if (hasError) return;
+    if (!validateRequired()) return;
+
+    // Debug log
+    // const payload = {
+    //   name: nameValue,
+    //   contact: contactValue,
+    //   type: typeValue,
+    //   budget: budgetValue,
+    //   desc: descValue,
+    // };
+
+    // console.log('Contact form payload:', payload);
+
+    setSent(true);
+    setNameValue('');
+    setContactValue('');
+    setTypeValue('');
+    setBudgetValue('');
+    setDescValue('');
+
+    sentTimerRef.current = setTimeout(() => setSent(false), 3000);
+  };
+
   const info = [
     {
       icon: '📬',
       label: c.email_label,
-      value: 'hello@vexor.team',
-      href: 'mailto:hello@vexor.team',
+      value: socialLinks.emailDisplay,
+      href: socialLinks.email,
     },
     {
       icon: '✈️',
       label: c.telegram_label,
-      value: '@vexor_studio',
-      href: 'https://t.me/vexor_studio',
+      value: socialLinks.telegramDisplay,
+      href: socialLinks.telegram,
     },
-    { icon: '🕐', label: c.response_label, value: c.response_value, href: null },
+    {
+      icon: '🕐',
+      label: c.response_label,
+      value: c.response_value,
+      href: null,
+    },
     {
       icon: '📍',
       label: c.location_label,
       value: c.location_value,
-      href: 'https://maps.google.com/?q=Kyiv,Ukraine',
+      href: socialLinks.location,
     },
   ];
 
@@ -61,7 +199,6 @@ export function Contact() {
         <p className="section-sub">{c.sub}</p>
       </motion.div>
 
-      {/* Contact info — always on top on mobile, left col on desktop */}
       <div className="contact-layout">
         <motion.div
           className="contact-info"
@@ -98,10 +235,18 @@ export function Contact() {
               >
                 {item.icon}
               </div>
+
               <div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 3 }}>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: 'var(--text-muted)',
+                    marginBottom: 3,
+                  }}
+                >
                   {item.label}
                 </div>
+
                 {item.href ? (
                   <a
                     href={item.href}
@@ -133,7 +278,6 @@ export function Contact() {
           ))}
         </motion.div>
 
-        {/* Form */}
         <motion.div
           className="contact-form"
           style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
@@ -142,29 +286,62 @@ export function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 14,
+            }}
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label className="no-select" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                {f.name_label}
+                {f.name_label} *
               </label>
+
               <input
                 type="text"
                 placeholder={f.name_placeholder}
                 style={inp}
-                onFocus={e => (e.target.style.borderColor = 'var(--blue-mid)')}
-                onBlur={e => (e.target.style.borderColor = 'var(--border-c)')}
+                value={nameValue}
+                onChange={e => {
+                  setNameValue(e.target.value);
+                  validateField(e, 'name');
+                  if (requiredError) setRequiredError(false);
+                }}
+                onFocus={e => {
+                  if (!containsScriptTag(e.target.value)) {
+                    e.target.style.borderColor = 'var(--blue-mid)';
+                  }
+                }}
+                onBlur={e => {
+                  if (!containsScriptTag(e.target.value)) {
+                    e.target.style.borderColor = 'var(--border-c)';
+                  }
+                }}
               />
             </div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label className="no-select" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                {f.contact_label}
+                {f.contact_label} *
               </label>
+
               <input
                 type="text"
                 placeholder={f.contact_placeholder}
                 style={inp}
+                value={contactValue}
+                onChange={e => {
+                  setContactValue(e.target.value);
+                  validateField(e, 'contact');
+                  if (requiredError) setRequiredError(false);
+                }}
                 onFocus={e => (e.target.style.borderColor = 'var(--blue-mid)')}
-                onBlur={e => (e.target.style.borderColor = 'var(--border-c)')}
+                onBlur={e => {
+                  if (!containsScriptTag(e.target.value)) {
+                    e.target.style.borderColor = 'var(--border-c)';
+                  }
+                }}
               />
             </div>
           </div>
@@ -173,25 +350,38 @@ export function Contact() {
             <label className="no-select" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
               {f.type_label}
             </label>
+
             <select
               style={{ ...inp, cursor: 'pointer' }}
+              value={typeValue}
+              onChange={e => setTypeValue(e.target.value)}
               onFocus={e => (e.target.style.borderColor = 'var(--blue-mid)')}
               onBlur={e => (e.target.style.borderColor = 'var(--border-c)')}
             >
               <option value="" disabled>
                 {f.type_placeholder}
               </option>
+
               {f.types.map(o => (
-                <option key={o}>{o}</option>
+                <option key={o} value={o}>
+                  {o}
+                </option>
               ))}
             </select>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <label className="no-select" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                 {f.budget_label}
               </label>
+
               <div
                 style={{
                   display: 'flex',
@@ -204,7 +394,11 @@ export function Contact() {
                 {(['uah', 'usd'] as const).map(cur => (
                   <button
                     key={cur}
-                    onClick={() => setCurrency(cur)}
+                    type="button"
+                    onClick={() => {
+                      setCurrency(cur);
+                      setBudgetValue('');
+                    }}
                     style={{
                       fontSize: 11,
                       padding: '3px 10px',
@@ -224,16 +418,22 @@ export function Contact() {
                 ))}
               </div>
             </div>
+
             <select
               style={{ ...inp, cursor: 'pointer' }}
+              value={budgetValue}
+              onChange={e => setBudgetValue(e.target.value)}
               onFocus={e => (e.target.style.borderColor = 'var(--blue-mid)')}
               onBlur={e => (e.target.style.borderColor = 'var(--border-c)')}
             >
               <option value="" disabled>
                 {f.budget_placeholder}
               </option>
+
               {(currency === 'uah' ? c.budget_uah : c.budget_usd).map(o => (
-                <option key={o}>{o}</option>
+                <option key={o} value={o}>
+                  {o}
+                </option>
               ))}
             </select>
           </div>
@@ -242,20 +442,34 @@ export function Contact() {
             <label className="no-select" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
               {f.desc_label}
             </label>
+
             <textarea
               placeholder={f.desc_placeholder}
               rows={4}
               style={{ ...inp, resize: 'none' }}
+              value={descValue}
+              onChange={e => {
+                setDescValue(e.target.value);
+                validateField(e, 'desc');
+              }}
               onFocus={e => (e.target.style.borderColor = 'var(--blue-mid)')}
-              onBlur={e => (e.target.style.borderColor = 'var(--border-c)')}
+              onBlur={e => {
+                if (!containsScriptTag(e.target.value)) {
+                  e.target.style.borderColor = 'var(--border-c)';
+                }
+              }}
             />
           </div>
 
+          {(hasError || requiredError) && (
+            <div style={{ color: '#ef4444', fontSize: 13, lineHeight: '1.4' }}>
+              {hasError ? c.invalid_script : validationErrorMessage}
+            </div>
+          )}
+
           <button
-            onClick={() => {
-              setSent(true);
-              setTimeout(() => setSent(false), 3000);
-            }}
+            type="button"
+            onClick={handleSubmit}
             style={{
               width: '100%',
               padding: 13,
@@ -263,21 +477,24 @@ export function Contact() {
               fontWeight: 600,
               fontSize: 14,
               border: 'none',
-              cursor: 'pointer',
+              cursor: hasError ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: 8,
               transition: 'all 0.2s',
-              background: sent ? '#22c55e' : isDark ? 'white' : '#0a0a0a',
-              color: sent ? 'white' : isDark ? '#0a0a0a' : 'white',
+              background: hasError ? '#ef4444' : sent ? '#22c55e' : isDark ? 'white' : '#0a0a0a',
+              color: hasError || sent ? 'white' : isDark ? '#0a0a0a' : 'white',
+              opacity: hasError ? 0.95 : 1,
             }}
           >
-            {sent ? (
+            {hasError ? (
+              c.button_error
+            ) : sent ? (
               `✓ ${f.submitted}`
             ) : (
               <>
-                {f.submit}{' '}
+                {f.submit}
                 <svg
                   width="14"
                   height="14"
@@ -292,9 +509,8 @@ export function Contact() {
             )}
           </button>
 
-          {/* TG button — bigger icon, visible */}
           <a
-            href="https://t.me/vexor_studio"
+            href={socialLinks.telegram}
             {...EXT}
             style={{
               width: '100%',
@@ -311,14 +527,6 @@ export function Contact() {
               transition: 'all 0.2s',
               background: 'rgba(38,169,224,0.07)',
             }}
-            onMouseEnter={e => {
-              e.currentTarget.style.borderColor = 'rgba(38,169,224,0.65)';
-              e.currentTarget.style.background = 'rgba(38,169,224,0.14)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.borderColor = 'rgba(38,169,224,0.35)';
-              e.currentTarget.style.background = 'rgba(38,169,224,0.07)';
-            }}
           >
             <svg
               width="23"
@@ -329,6 +537,7 @@ export function Contact() {
             >
               <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.269c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.088 14.15l-2.967-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.735.436z" />
             </svg>
+
             <span className="tg-btn-full">{f.tg_btn}</span>
             <span className="tg-btn-short">Telegram</span>
           </a>
@@ -342,21 +551,38 @@ export function Contact() {
           gap: 64px;
           align-items: start;
         }
+
         @media (max-width: 768px) {
           .contact-layout {
             grid-template-columns: 1fr !important;
             gap: 40px !important;
           }
-          .contact-info { order: -1; }
+
+          .contact-info {
+            order: -1;
+          }
+
           .contact-form > div[style*="grid-template-columns"] {
             grid-template-columns: 1fr !important;
           }
         }
-        .tg-btn-short { display: none; }
-        .tg-btn-full { display: inline; }
+
+        .tg-btn-short {
+          display: none;
+        }
+
+        .tg-btn-full {
+          display: inline;
+        }
+
         @media (max-width: 400px) {
-          .tg-btn-full { display: none; }
-          .tg-btn-short { display: inline; }
+          .tg-btn-full {
+            display: none;
+          }
+
+          .tg-btn-short {
+            display: inline;
+          }
         }
       `}</style>
     </section>

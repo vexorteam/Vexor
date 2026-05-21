@@ -2,16 +2,33 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useApp } from '../lib/context';
 import type { WorkMeta } from '../lib/mdx';
 
-const EXT = { target: '_blank' as const, rel: 'noopener noreferrer nofollow' };
+const CATEGORY_KEYS = [
+  'all',
+  'Landing Page',
+  'Mobile App',
+  'SaaS Platform',
+  'Web App',
+  'Design',
+  'Automation & AI',
+] as const;
 
-const CATEGORIES = ['All', 'Landing Page', 'Mobile App', 'SaaS Platform', 'Web App', 'Design'];
+export function WorkPageClient({
+  projectsUk,
+  projectsEn,
+}: {
+  projectsUk: WorkMeta[];
+  projectsEn: WorkMeta[];
+}) {
+  const [active, setActive] = useState('all');
+  const { tr, lang } = useApp();
+  const w = tr.work;
+  const cats = w.categories as Record<string, string>;
 
-export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
-  const [active, setActive] = useState('All');
-
-  const filtered = active === 'All' ? projects : projects.filter(p => p.type === active);
+  const projects = lang === 'en' ? projectsEn : projectsUk;
+  const filtered = active === 'all' ? projects : projects.filter(p => p.type === active);
 
   return (
     <main style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80 }}>
@@ -22,7 +39,6 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
           padding: 'clamp(40px,6vw,80px) clamp(16px,5vw,48px)',
         }}
       >
-        {/* Back */}
         <Link
           href="/"
           style={{
@@ -47,7 +63,7 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
           >
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
-          На головну
+          {w.back2}
         </Link>
 
         <motion.div
@@ -66,7 +82,7 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
               marginBottom: 12,
             }}
           >
-            // роботи
+            {w.tag}
           </span>
           <h1
             style={{
@@ -78,53 +94,57 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
               lineHeight: 1.1,
             }}
           >
-            Всі проєкти
+            {w.all_title}
           </h1>
           <p style={{ fontSize: 16, color: 'var(--text-secondary)', marginBottom: 40 }}>
-            {projects.length} проєктів — від лендингів до SaaS-платформ
+            {w.all_sub.replace('{n}', String(projects.length))}
           </p>
         </motion.div>
 
-        {/* Category filter */}
+        {/* Filters */}
         <motion.div
+          className="work-filters"
           style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 48 }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActive(cat)}
-              style={{
-                fontSize: 13,
-                padding: '7px 16px',
-                borderRadius: 8,
-                border: '1px solid',
-                cursor: 'pointer',
-                fontWeight: 500,
-                transition: 'all 0.2s',
-                fontFamily: 'Geist, sans-serif',
-                borderColor: active === cat ? 'var(--accent)' : 'var(--border-c)',
-                background: active === cat ? 'rgba(74,158,255,0.1)' : 'transparent',
-                color: active === cat ? 'var(--accent)' : 'var(--text-muted)',
-              }}
-            >
-              {cat}
-              {cat !== 'All' && (
-                <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.6 }}>
-                  {projects.filter(p => p.type === cat).length}
-                </span>
-              )}
-            </button>
-          ))}
+          {CATEGORY_KEYS.map(cat => {
+            const label = cats[cat] ?? cat;
+            const count =
+              cat === 'all' ? projects.length : projects.filter(p => p.type === cat).length;
+            return (
+              <button
+                key={cat}
+                onClick={() => setActive(cat)}
+                style={{
+                  fontSize: 13,
+                  padding: '7px 16px',
+                  borderRadius: 8,
+                  border: '1px solid',
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  transition: 'all 0.2s',
+                  fontFamily: 'Geist, sans-serif',
+                  borderColor: active === cat ? 'var(--accent)' : 'var(--border-c)',
+                  background: active === cat ? 'rgba(74,158,255,0.1)' : 'transparent',
+                  color: active === cat ? 'var(--accent)' : 'var(--text-muted)',
+                }}
+              >
+                {label}
+                {cat !== 'all' && (
+                  <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.6 }}>{count}</span>
+                )}
+              </button>
+            );
+          })}
         </motion.div>
 
         {/* Grid */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))',
             gap: 16,
           }}
         >
@@ -144,7 +164,6 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
                     background: 'var(--bg2)',
                     border: '1px solid var(--border-c)',
                     transition: 'all 0.2s',
-                    cursor: 'pointer',
                   }}
                   onMouseEnter={e => {
                     e.currentTarget.style.borderColor = 'var(--text-muted)';
@@ -159,21 +178,42 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
                     style={{
                       height: 160,
                       background: p.gradient,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
                       position: 'relative',
+                      overflow: 'hidden',
                     }}
                   >
-                    <div
-                      style={{
-                        width: 64,
-                        height: 44,
-                        borderRadius: 6,
-                        background: 'rgba(255,255,255,0.1)',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                      }}
-                    />
+                    {p.image ? (
+                      <img
+                        src={p.image}
+                        alt={p.title}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          display: 'block',
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 64,
+                            height: 44,
+                            borderRadius: 6,
+                            background: 'rgba(255,255,255,0.1)',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                          }}
+                        />
+                      </div>
+                    )}
                     <span
                       style={{
                         position: 'absolute',
@@ -181,6 +221,7 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
                         right: 14,
                         fontSize: 14,
                         color: 'rgba(255,255,255,0.5)',
+                        zIndex: 1,
                       }}
                     >
                       ↗
@@ -194,6 +235,7 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
                         fontFamily: 'Geist Mono, monospace',
                         color: 'rgba(255,255,255,0.4)',
                         letterSpacing: '0.06em',
+                        zIndex: 1,
                       }}
                     >
                       {p.year}
@@ -211,7 +253,7 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
                         marginBottom: 5,
                       }}
                     >
-                      {p.type}
+                      {cats[p.type as keyof typeof cats] ?? p.type}
                     </span>
                     <h3
                       style={{
@@ -259,6 +301,20 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
           ))}
         </div>
 
+        <style>{`
+          .work-filters button {
+            white-space: nowrap;
+          }
+          @media (max-width: 320px) {
+            .work-filters {
+              flex-wrap: nowrap;
+              overflow-x: auto;
+              padding-bottom: 8px;
+              -webkit-overflow-scrolling: touch;
+            }
+            .work-filters::-webkit-scrollbar { display: none; }
+          }
+        `}</style>
         {filtered.length === 0 && (
           <div
             style={{
@@ -268,7 +324,7 @@ export function WorkPageClient({ projects }: { projects: WorkMeta[] }) {
               fontSize: 15,
             }}
           >
-            Немає проєктів у цій категорії
+            {w.empty}
           </div>
         )}
       </div>

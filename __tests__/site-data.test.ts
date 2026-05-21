@@ -1,100 +1,107 @@
-import { services, projects, team, faq, budgetUAH, budgetUSD, stats } from '@/app/data/site';
+import { socialLinks } from '@/app/data/site';
+import uk from '@/app/i18n/uk.json';
+import en from '@/app/i18n/en.json';
 
 describe('site data integrity', () => {
-  describe('services', () => {
-    it('should have 6 services', () => {
-      expect(services).toHaveLength(6);
+  describe('socialLinks', () => {
+    it('should have all required fields', () => {
+      expect(socialLinks.telegram).toMatch(/^https?:\/\//);
+      expect(socialLinks.github).toMatch(/^https?:\/\//);
+      expect(socialLinks.email).toMatch(/^mailto:/);
+      expect(socialLinks.emailDisplay).toContain('@');
+      expect(socialLinks.telegramDisplay).toMatch(/^@/);
+      expect(socialLinks.location).toMatch(/^https?:\/\//);
     });
+  });
 
+  describe('services_list', () => {
+    it('should have 6 services in uk', () => {
+      expect(uk.services_list).toHaveLength(6);
+    });
+    it('should have 6 services in en', () => {
+      expect(en.services_list).toHaveLength(6);
+    });
     it('each service should have required fields', () => {
-      services.forEach(service => {
-        expect(service.icon).toBeTruthy();
-        expect(service.name).toBeTruthy();
-        expect(service.desc).toBeTruthy();
-        expect(Array.isArray(service.tags)).toBe(true);
-        expect(service.tags.length).toBeGreaterThan(0);
+      uk.services_list.forEach(s => {
+        expect(s.icon).toBeTruthy();
+        expect(s.name).toBeTruthy();
+        expect(s.desc).toBeTruthy();
+        expect(Array.isArray(s.tags)).toBe(true);
       });
     });
   });
 
-  describe('projects', () => {
-    it('should have at least 1 project', () => {
-      expect(projects.length).toBeGreaterThan(0);
+  describe('work.projects_list', () => {
+    it('should have 3 projects in uk', () => {
+      expect(uk.work.projects_list).toHaveLength(3);
     });
-
-    it('each project should have a valid link', () => {
-      projects.forEach(project => {
-        expect(project.link).toMatch(/^https?:\/\//);
-      });
+    it('should have 3 projects in en', () => {
+      expect(en.work.projects_list).toHaveLength(3);
     });
-
     it('each project should have required fields', () => {
-      projects.forEach(project => {
-        expect(project.type).toBeTruthy();
-        expect(project.name).toBeTruthy();
-        expect(project.desc).toBeTruthy();
-        expect(project.gradient).toBeTruthy();
-        expect(Array.isArray(project.stack)).toBe(true);
+      uk.work.projects_list.forEach(p => {
+        expect(p.slug).toBeTruthy();
+        expect(p.type).toBeTruthy();
+        expect(p.name).toBeTruthy();
+        expect(p.desc).toBeTruthy();
+        expect(p.gradient).toBeTruthy();
+        expect(Array.isArray(p.stack)).toBe(true);
       });
     });
   });
 
-  describe('team', () => {
-    it('should have 6 team members', () => {
-      expect(team).toHaveLength(6);
+  describe('about.team_list', () => {
+    it('should have 6 team members in uk', () => {
+      expect(uk.about.team_list).toHaveLength(6);
     });
-
+    it('should have 6 team members in en', () => {
+      expect(en.about.team_list).toHaveLength(6);
+    });
     it('each member should have required fields', () => {
-      team.forEach(member => {
-        expect(member.initials).toHaveLength(2);
-        expect(member.name).toBeTruthy();
-        expect(member.role).toBeTruthy();
-        expect(member.desc).toBeTruthy();
-        expect(Array.isArray(member.skills)).toBe(true);
-        expect(member.skills).toHaveLength(3);
+      uk.about.team_list.forEach(m => {
+        expect(m.initials).toHaveLength(2);
+        expect(m.name).toBeTruthy();
+        expect(m.role).toBeTruthy();
+        expect(m.desc).toBeTruthy();
+        expect(Array.isArray(m.skills)).toBe(true);
+        expect(m.skills).toHaveLength(3);
       });
     });
   });
 
   describe('faq', () => {
-    it('should have at least 4 FAQ items', () => {
-      expect(faq.length).toBeGreaterThanOrEqual(4);
+    it('should have 6 items in uk', () => {
+      expect(uk.faq.items).toHaveLength(6);
     });
-
-    it('each FAQ item should have question and answer', () => {
-      faq.forEach(item => {
+    it('should have 6 items in en', () => {
+      expect(en.faq.items).toHaveLength(6);
+    });
+    it('each item should have question and answer', () => {
+      uk.faq.items.forEach(item => {
         expect(item.q).toBeTruthy();
-        expect(item.a).toBeTruthy();
         expect(item.a.length).toBeGreaterThan(20);
       });
     });
   });
 
-  describe('budget options', () => {
-    it('UAH budget should have options', () => {
-      expect(budgetUAH.length).toBeGreaterThan(0);
-      budgetUAH.slice(0, -1).forEach(opt => expect(opt).toContain('₴'));
+  describe('contact budget options', () => {
+    it('UAH budget should have options with ₴', () => {
+      expect(uk.contact.budget_uah.length).toBeGreaterThan(0);
+      uk.contact.budget_uah.slice(0, -1).forEach(opt => expect(opt).toContain('₴'));
     });
-
     it('USD budget should have options', () => {
-      expect(budgetUSD.length).toBeGreaterThan(0);
+      expect(en.contact.budget_usd.length).toBeGreaterThan(0);
     });
-
     it('UAH and USD should have equal number of options', () => {
-      expect(budgetUAH.length).toBe(budgetUSD.length);
+      expect(uk.contact.budget_uah.length).toBe(uk.contact.budget_usd.length);
     });
   });
 
-  describe('stats', () => {
-    it('should have 4 stats', () => {
-      expect(stats).toHaveLength(4);
-    });
-
-    it('each stat should have num and label', () => {
-      stats.forEach(stat => {
-        expect(stat.num).toBeTruthy();
-        expect(stat.label).toBeTruthy();
-      });
+  describe('i18n completeness', () => {
+    it('uk and en should have same top-level keys', () => {
+      const ukKeys = Object.keys(uk).sort();
+      const enKeys = Object.keys(en).sort();
+      expect(ukKeys).toEqual(enKeys);
     });
   });
 });
